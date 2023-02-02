@@ -7,8 +7,11 @@
 //
 
 import UIKit
+import AVFoundation
 
 class ViewController: UIViewController {
+    
+    var player : AVAudioPlayer!
     
     var time = Timer()
     
@@ -30,7 +33,15 @@ class ViewController: UIViewController {
         
         time.invalidate()
         
+        usedTime = 0
+        
+        totalTime = 0
+        
         progressBar.progress = 1.0
+        
+        playAlarm().stop()
+        
+        self.titleLabel.text = "How do you like your eggs?"
         
         let eggState : String? = sender.currentTitle
         
@@ -42,13 +53,18 @@ class ViewController: UIViewController {
     @objc func updateCounter() {
         //example functionality
         if usedTime < totalTime {
-            self.titleLabel.text = "How do you like your eggs?"
             print("\(usedTime)")
             usedTime += 1
             progressBar.progress = 1.0 - usedTime / totalTime
         } else {
             self.titleLabel.text = "Ready to Eat"
+            playAlarm().play()
         }
     }
-
+    
+    func playAlarm() -> AVAudioPlayer {
+        let url = Bundle.main.url(forResource: "alarm_sound", withExtension: "mp3")
+        player = try! AVAudioPlayer(contentsOf: url!)
+        return player
+    }
 }
